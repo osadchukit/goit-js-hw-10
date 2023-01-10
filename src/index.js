@@ -13,7 +13,12 @@ const BASE_URL = 'https://restcountries.com/v3.1/name/';
 input.addEventListener('input', debounce(inputText, 300));
 
 function inputText(event) {
-  event.preventDefault();
+    event.preventDefault();
+    if (event.target.value.trim() === '') {
+        countryList.innerHTML = '';
+        return
+    }
+    console.dir(event.target.value.trim());
     const country = event.target.value.trim();
     countryApi(country)
       .then(data => createMarkup(data))
@@ -30,6 +35,7 @@ function countryApi(country) {
 }
 
 function createMarkup(data) {
+    
 if(data.length > 10){
     Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
 } else if (data.length <= 10 && data.length >= 2) {
@@ -53,8 +59,10 @@ if(data.length > 10){
     })
     .join('');
   countryList.innerHTML = markup;
-} 
+    } 
+
 }
+
 
 function createError(error) {
     Notiflix.Notify.failure('Oops, there is no country with that name');
