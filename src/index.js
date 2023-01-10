@@ -14,7 +14,7 @@ input.addEventListener('input', debounce(inputText, 300));
 
 function inputText(event) {
   event.preventDefault();
-    const country = event.target.value;
+    const country = event.target.value.trim();
     countryApi(country)
       .then(data => createMarkup(data))
       .catch(error => createError(error));
