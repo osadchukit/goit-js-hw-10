@@ -3,30 +3,31 @@ import _, { debounce } from 'lodash';
 import Notiflix from 'notiflix';
 
 const DEBOUNCE_DELAY = 300;
+const BASE_URL = 'https://restcountries.com/v3.1';
+const PATH = 'name';
 
 const input = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-infox');
 
-const BASE_URL = 'https://restcountries.com/v3.1/name/';
-
-input.addEventListener('input', debounce(inputText, 300));
+input.addEventListener('input', debounce(inputText, DEBOUNCE_DELAY));
 
 function inputText(event) {
     event.preventDefault();
-    if (event.target.value.trim() === '') {
-        countryList.innerHTML = '';
-        return
-    }
-    console.dir(event.target.value.trim());
     const country = event.target.value.trim();
+
+    if (country === '') {
+      countryList.innerHTML = '';
+      return;
+    }
+
     countryApi(country)
       .then(data => createMarkup(data))
       .catch(error => createError(error));
 }
 
 function countryApi(country) {
-    return fetch(`${BASE_URL}${country}`).then(resp => {
+    return fetch(`${BASE_URL}/${PATH}/${country}`).then(resp => {
       if (!resp.ok) {
           throw new Error(resp.statusText);
       }
@@ -35,7 +36,7 @@ function countryApi(country) {
 }
 
 function createMarkup(data) {
-    
+
 if(data.length > 10){
     Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
 } else if (data.length <= 10 && data.length >= 2) {
@@ -48,26 +49,23 @@ if(data.length > 10){
   countryList.innerHTML = markup;
 } else if (data.length === 1) {
   const markup = data
-    .map(dat => {
+      .map(dat => {
       return `<li>
 <img src="${dat.flags.svg}" alt="flag" width="100px">
       <p><b>Name</b>: ${dat.name.official}</p>
       <p><b>capital</b>: ${dat.capital}</p>
       <p><b>population</b>: ${dat.population}</p>
-      <p><b>languages</b>: ${dat.languages}</p>
+      <p><b>languages</b>: ${Object.values(dat.languages)}</p>
       </li>`;
     })
     .join('');
   countryList.innerHTML = markup;
     } 
-
 }
-
 
 function createError(error) {
-    Notiflix.Notify.failure('Oops, there is no country with that name');
+    Notiflix.Notify.failure(
+      `Oops, there is no country with that name ERROR ${error}`
+    );
     countryList.innerHTML = '';
 }
-
-// ---------------
-
