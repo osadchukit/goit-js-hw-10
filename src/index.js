@@ -37,7 +37,7 @@ function createMarkup(data) {
       .map(dat => {
         return `<li class="js-country">
             <img src="${dat.flags.svg}" alt="flag" width="40px">
-            <p><b>${dat.name.official}</b></p>
+            <p>${dat.name.official}</p>
             </li>`;
       })
       .join('');
