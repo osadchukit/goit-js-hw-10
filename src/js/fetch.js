@@ -4,10 +4,10 @@ const PATH = 'name';
 export function fetchCountries(country) {
   return fetch(`${BASE_URL}/${PATH}/${country}`)
     .then(resp => {
-      if (!resp.ok) {
-        throw new Error(resp.statusText);
-      }
+      if (!resp.ok) { throw new Error(resp.statusText) }
       return resp.json();
     })
+
+    
     .catch(error => createError(error));
 }
